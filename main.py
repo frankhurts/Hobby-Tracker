@@ -1,15 +1,24 @@
 # Install if needed
+# let's see if I have everything setup for this, or if its going to break right away, knowing my luck
 # pip install gspread oauth2client
 
+# this is the Google Sheet API
 import gspread
+
+# it seems as tho a "Service Account" is going to act like a bot
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime, timedelta
 
 # Connect to your Google Sheet
 scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/drive']
+
+# Acquiring credentials through JSON (?)
+# Q - am I going to have to add this json myself? Dont forget to remove it from the Github repo! 
 creds = ServiceAccountCredentials.from_json_keyfile_name('your-credentials.json', scope)
 client = gspread.authorize(creds)
 
+# Connecting to the sheet
+# Q - is this even the right name for the sheet?
 sheet = client.open('Your Hobby Tracker').sheet1
 
 # Read all hobbies
@@ -36,6 +45,7 @@ def next_interval(strength):
     return intervals.get(strength, 7)
 
 # Find hobbies due for review
+# Q - is this creating a new list filled with due hobbies?
 due_hobbies = [
     hobby for hobby in hobbies
     if hobby['Status'].lower() == 'active' and parse_date(hobby['Next Review Date']) <= today
